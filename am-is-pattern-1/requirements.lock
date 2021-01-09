@@ -1,6 +1,0 @@
-dependencies:
-- name: nfs-server-provisioner
-  repository: https://kvaps.github.io/charts
-  version: 1.2.0
-digest: sha256:23005f52dc5af3a44afe6e8b8d88f0cf738c49c8fed12651d2a4cc8362b5816c
-generated: "2021-01-06T08:40:30.766074-05:00"

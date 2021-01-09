@@ -58,7 +58,7 @@ You can install the relevant Helm chart either from [WSO2 Helm Chart Repository]
  Helm version 2
 
  ```
- helm install --name <RELEASE_NAME> wso2/am-pattern-1 --version 3.2.0-1 --namespace <NAMESPACE>
+ helm install --name <RELEASE_NAME> kubernetes-apim-is/am-is-pattern-1 --version 3.2.0-3 --namespace <NAMESPACE>
  ```
 
  Helm version 3
@@ -66,7 +66,7 @@ You can install the relevant Helm chart either from [WSO2 Helm Chart Repository]
  - Deploy the Kubernetes resources using the Helm Chart
  
     ```
-    helm install <RELEASE_NAME> wso2/am-pattern-1 --version 3.2.0-1 --namespace <NAMESPACE> --create-namespace
+    helm install <RELEASE_NAME> kubernetes-apim-is/am-is-pattern-1 --version 3.2.0-3 --namespace <NAMESPACE> --create-namespace
     ```
 
 The above steps will deploy the deployment pattern using WSO2 product Docker images available at DockerHub.
@@ -77,13 +77,13 @@ please provide your WSO2 Subscription credentials via input values (using `--set
 Please see the following example.
 
 ```
- helm install --name <RELEASE_NAME> wso2/am-pattern-1 --version 3.2.0-1 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
+ helm install --name <RELEASE_NAME> kubernetes-apim-is/am-is-pattern-1 --version 3.2.0-3 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
 ```
 
 #### Install Chart From Source
 
 >In the context of this document, <br>
->* `KUBERNETES_HOME` will refer to a local copy of the [`wso2/kubernetes-apim`](https://github.com/wso2/kubernetes-apim/)
+>* `KUBERNETES_HOME` will refer to a local copy of the [`wso2/kubernetes-apim-is`](https://github.com/irham0019/kubernetes-apim-is/)
 Git repository. <br>
 >* `HELM_HOME` will refer to `<KUBERNETES_HOME>/advanced`. <br>
 
