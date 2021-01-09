@@ -21,7 +21,7 @@ git clone https://github.com/wso2/docker-is.git
 
 - Navigate to `<IS_DOCKERFILE_HOME>` directory. <br>
   Execute `docker build` command as shown below.
-    + `docker build -t wso2is:5.10.0 .`
+    + `docker build -t wso2/wso2iskm:5.10.0 .`
 
 > By default, the Docker image will prepackage the General Availability (GA) release version of the relevant WSO2 product.
 

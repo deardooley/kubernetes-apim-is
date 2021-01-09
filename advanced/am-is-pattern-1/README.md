@@ -42,6 +42,9 @@ For advanced details on the deployment pattern, please refer to the official
     ```
      helm repo add wso2 https://helm.wso2.com && helm repo update
     ```
+* API Manager 3.2.0 image will be downloaded from the wso2 repo 
+
+* Build the Identity server Key manager image which can be found in kubernetes-apim-is/dockerfiles/ubuntu/is as `docker build -t wso2/wso2iskm:5.10.0 .`
 
 ## Quick Start Guide
 
@@ -83,14 +86,14 @@ Please see the following example.
 #### Install Chart From Source
 
 >In the context of this document, <br>
->* `KUBERNETES_HOME` will refer to a local copy of the [`wso2/kubernetes-apim-is`](https://github.com/irham0019/kubernetes-apim-is/)
+>* `KUBERNETES_HOME` will refer to a local copy of the [`irham0019/kubernetes-apim-is`](https://github.com/irham0019/kubernetes-apim-is/)
 Git repository. <br>
 >* `HELM_HOME` will refer to `<KUBERNETES_HOME>/advanced`. <br>
 
 ##### Clone the Helm Resources for WSO2 API Manager Git repository.
 
 ```
-git clone https://github.com/wso2/kubernetes-apim.git
+git clone https://github.com/irham0019/kubernetes-apim-is.git
 ```
 
 ##### Deploy Helm chart for WSO2 API Manager Pattern 1 deployment.
@@ -169,7 +172,11 @@ hostnames and the external IP in the `/etc/hosts` file at the client-side.
 
 - API Manager DevPortal: `https://<wso2.deployment.am.ingress.management.hostname>/devportal`
 
-- API Manager Analytics Dashboard: `https://<wso2.deployment.analytics.dashboard.ingress.hostname>/analytics-dashboard`
+- Identity Server's Carbon Management Console: `https://<wso2.deployment.wso2is.ingress.identity.hostname>/carbon`
+
+- Identity Server's Console: `https://<wso2.deployment.wso2is.ingress.identity.hostname>/console`
+
+- Identity Server's My Account: `https://<wso2.deployment.wso2is.ingress.identity.hostname>/myaccount`
 
 
 ## Configuration
@@ -227,45 +234,32 @@ If you do not have an active WSO2 subscription, **do not change** the parameters
 
 **Note**: The above mentioned default, minimum resource amounts for running WSO2 API Manager server profiles are based on its [official documentation](https://apim.docs.wso2.com/en/latest/install-and-setup/install/installation-prerequisites/).
 
-###### Analytics Dashboard Runtime Configurations
+###### Identity Server Configurations
 
-| Parameter                                                                     | Description                                                                                                      | Default Value               |
-|-------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------|-----------------------------|
-| `wso2.deployment.analytics.dashboard.dockerRegistry`                          | Registry location of the Docker image to be used to create an API Manager Analytics instance                     | -                           |
-| `wso2.deployment.analytics.dashboard.imageName`                               | Name of the Docker image to be used to create an API Manager Analytics instance                                  | `wso2am-analytics-dashboard` |
-| `wso2.deployment.analytics.dashboard.imageTag`                                | Tag of the image used to create an API Manager Analytics instance                                                | 3.2.0                       |
-| `wso2.deployment.analytics.dashboard.imagePullPolicy`                         | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images)                            | `Always`                    |
-| `wso2.deployment.analytics.dashboard.replicas`                                | Number of replicas of API Manager Analytics to be started                                                        | 1                           |
-| `wso2.deployment.analytics.dashboard.strategy.rollingUpdate.maxSurge`         | Refer to [doc](https://v1-14.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/#deploymentstrategy-v1-apps)  | 1                |
-| `wso2.deployment.analytics.dashboard.strategy.rollingUpdate.maxUnavailable`   | Refer to [doc](https://v1-14.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/#deploymentstrategy-v1-apps)  | 0                |
-| `wso2.deployment.analytics.dashboard.livenessProbe.initialDelaySeconds`       | Initial delay for the live-ness probe for API Manager Analytics node                                             | 20                          |
-| `wso2.deployment.analytics.dashboard.livenessProbe.periodSeconds`             | Period of the live-ness probe for API Manager Analytics node                                                     | 10                          |
-| `wso2.deployment.analytics.dashboard.readinessProbe.initialDelaySeconds`      | Initial delay for the readiness probe for API Manager Analytics node                                             | 20                          |
-| `wso2.deployment.analytics.dashboard.readinessProbe.periodSeconds`            | Period of the readiness probe for API Manager Analytics node                                                     | 10                          |
-| `wso2.deployment.analytics.dashboard.resources.requests.memory`               | The minimum amount of memory that should be allocated for a Pod                                                  | 4Gi                         |
-| `wso2.deployment.analytics.dashboard.resources.requests.cpu`                  | The minimum amount of CPU that should be allocated for a Pod                                                     | 2000m                       |
-| `wso2.deployment.analytics.dashboard.resources.limits.memory`                 | The maximum amount of memory that should be allocated for a Pod                                                  | 4Gi                         |
-| `wso2.deployment.analytics.dashboard.resources.limits.cpu`                    | The maximum amount of CPU that should be allocated for a Pod                                                     | 2000m                       |
-| `wso2.deployment.analytics.dashboard.config`                                  | Custom deployment configuration file (`<WSO2AM_ANALYTICS>/conf/dashboard/deployment.yaml`)                       | -                           |
-| `wso2.deployment.analytics.dashboard.ingress.hostname`                        | Hostname for API Manager Analytics Dashboard                                                                     | `analytics.am.wso2.com`     |
-| `wso2.deployment.analytics.dashboard.ingress.annotations`                     | Ingress resource annotations for API Manager Analytics Dashboard                                                 | Community NGINX Ingress controller annotations         |
+| Parameter                                                                   | Description                                                                               | Default Value               |
+|-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
+| `wso2.deployment.wso2is.dockerRegistry`                                     | Registry location of the Docker image to be used to create Identity Server instances      | -                           |
+| `wso2.deployment.wso2is.imageName`                                          | Name of the Docker image to be used to create Identity Server instances                   | `wso2is`                    |
+| `wso2.deployment.wso2is.imageTag`                                           | Tag of the image used to create Identity Server instances                                 | `5.11.0`                    |
+| `wso2.deployment.wso2is.imagePullPolicy`                                    | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images)     | `Always`                    |
+| `wso2.deployment.wso2is.replicas`                                           | Number of replicas for IS node                                                            | 2                           |
+| `wso2.deployment.wso2is.livenessProbe.initialDelaySeconds`                  | Initial delay for the live-ness probe for IS node                                         | 120                         |
+| `wso2.deployment.wso2is.livenessProbe.periodSeconds`                        | Period of the live-ness probe for IS node                                                 | 10                          |
+| `wso2.deployment.wso2is.readinessProbe.initialDelaySeconds`                 | Initial delay for the readiness probe for IS node                                         | 120                         |
+| `wso2.deployment.wso2is.readinessProbe.periodSeconds`                       | Period of the readiness probe for IS node                                                 | 10                          |
+| `wso2.deployment.wso2is.resources.requests.memory`                          | The minimum amount of memory that should be allocated for a Pod                           | 3Gi                         |
+| `wso2.deployment.wso2is.resources.requests.cpu`                             | The minimum amount of CPU that should be allocated for a Pod                              | 3000m                       |
+| `wso2.deployment.wso2is.resources.limits.memory`                            | The maximum amount of memory that should be allocated for a Pod                           | 4Gi                         |
+| `wso2.deployment.wso2is.resources.limits.cpu`                               | The maximum amount of CPU that should be allocated for a Pod                              | 4000m                       |
+| `wso2.deployment.wso2is.resources.jvm.heap.memory.xms`                      | The initial memory allocation for JVM Heap                                                | 2048m                       |
+| `wso2.deployment.wso2is.resources.jvm.heap.memory.xmx`                      | The maximum memory allocation for JVM Heap                                                | 2048m                       |
+| `wso2.deployment.wso2is.config`                                             | Custom deployment configuration file (`<WSO2IS>/repository/conf/deployment.toml`)         | -                           |
+| `wso2.deployment.wso2is.ingress.identity.hostname`                          | Hostname for for Identity service                                                         | `identity.wso2.com`         |
+| `wso2.deployment.wso2is.ingress.identity.annotations`                       | Ingress resource annotations for Identity service                                         | Community NGINX Ingress controller annotations         |
 
-###### Analytics Worker Runtime Configurations
+> The above referenced default, minimum resource amounts for running WSO2 Identity Server profiles are based on its [official documentation](https://is.docs.wso2.com/en/latest/setup/installation-prerequisites/).
 
-| Parameter                                                                  | Description                                                                                                         | Default Value               |
-|----------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|-----------------------------|
-| `wso2.deployment.analytics.worker.dockerRegistry`                          | Registry location of the Docker image to be used to create an API Manager Analytics instance                        | -                           |
-| `wso2.deployment.analytics.worker.imageName`                               | Name of the Docker image to be used to create an API Manager Analytics instance                                     | `wso2am-analytics-worker`   |
-| `wso2.deployment.analytics.worker.imageTag`                                | Tag of the image used to create an API Manager Analytics instance                                                   | 3.2.0                       |
-| `wso2.deployment.analytics.worker.imagePullPolicy`                         | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images)                               | `Always`                    |
-| `wso2.deployment.analytics.worker.livenessProbe.initialDelaySeconds`       | Initial delay for the live-ness probe for API Manager Analytics node                                                | 20                          |
-| `wso2.deployment.analytics.worker.livenessProbe.periodSeconds`             | Period of the live-ness probe for API Manager Analytics node                                                        | 10                          |
-| `wso2.deployment.analytics.worker.readinessProbe.initialDelaySeconds`      | Initial delay for the readiness probe for API Manager Analytics node                                                | 20                          |
-| `wso2.deployment.analytics.worker.readinessProbe.periodSeconds`            | Period of the readiness probe for API Manager Analytics node                                                        | 10                          |
-| `wso2.deployment.analytics.worker.resources.requests.memory`               | The minimum amount of memory that should be allocated for a Pod                                                     | 4Gi                         |
-| `wso2.deployment.analytics.worker.resources.requests.cpu`                  | The minimum amount of CPU that should be allocated for a Pod                                                        | 2000m                       |
-| `wso2.deployment.analytics.worker.resources.limits.memory`                 | The maximum amount of memory that should be allocated for a Pod                                                     | 4Gi                         |
-| `wso2.deployment.analytics.worker.resources.limits.cpu`                    | The maximum amount of CPU that should be allocated for a Pod                                                        | 2000m                       |
+> The above referenced JVM settings are based on its [official documentation](https://is.docs.wso2.com/en/latest/setup/performance-tuning-recommendations/#jvm-settings).
 
 ###### Kubernetes Specific Configurations
 
