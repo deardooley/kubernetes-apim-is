@@ -1,0 +1,51 @@
+{
+  "name": "WSO2-Identity-Server-KM",
+  "displayName": "WSO2-Identity-Server",
+  "type": "WSO2-IS",
+  "description": "This is a key manager for Developers",
+  "wellKnownEndpoint": "",
+  "introspectionEndpoint": "https://wso2is-pattern-1-identity-service:9443/oauth2/introspect",
+  "clientRegistrationEndpoint": "https://wso2is-pattern-1-identity-service:9443/keymanager-operations/dcr/register",
+  "tokenEndpoint": "https://wso2is-pattern-1-identity-service:9443/oauth2/token",
+  "revokeEndpoint": "https://wso2is-pattern-1-identity-service:9443/oauth2/revoke",
+  "userInfoEndpoint": "https://wso2is-pattern-1-identity-service:9443/oauth2/userinfo?schema=openid",
+  "authorizeEndpoint": "https://wso2is-pattern-1-identity-service:9443/oauth2/authorize",
+  "certificates": {
+    "type": "PEM",
+    "value": ""
+  },
+  "issuer": "https://wso2is-pattern-1-identity-service:9443/services",
+  "scopeManagementEndpoint": "https://wso2is-pattern-1-identity-service:9443/api/identity/oauth2/v1.0/scopes",
+  "availableGrantTypes": [
+    "client_credentials",
+    "refresh_token",
+    "authorization_code",
+    "password"
+  ],
+  "enableTokenGeneration": true,
+  "enableTokenEncryption": false,
+  "enableTokenHashing": false,
+  "enableMapOAuthConsumerApps": false,
+  "enableOAuthAppCreation": true,
+  "enableSelfValidationJWT": true,
+  "claimMapping": [
+    {
+      "remoteClaim": "http://idp.org/username",
+      "localClaim": "http://wso2.org/username"
+    }
+  ],
+  "tokenValidation": [
+    {
+      "id": 0,
+      "enable": false,
+      "type": "REFERENCE",
+      "value": "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}"
+    }
+  ],
+  "enabled": true,
+  "additionalProperties": {
+    "self_validate_jwt": true,
+    "Username": "admin",
+    "Password": "admin"
+  }
+}
