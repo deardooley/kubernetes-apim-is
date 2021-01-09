@@ -100,7 +100,7 @@ The id of Resident key manager has to be passed in the url as shown in the follo
 
 Sample request 
 ```
-curl -k -X PUT -H "Authorization: Bearer eca2de3e-7740-3907-90b8-fa97c3acb019" -H "Content-Type: application/json" -d @data2.json "https://am.wso2.com/api/am/admin/v1/key-managers/9e814607-0f92-4205-ae03-e20d6b7a4a98"
+curl -k -X PUT -H "Authorization: Bearer <access-token>" -H "Content-Type: application/json" -d @data2.json "https://am.wso2.com/api/am/admin/v1/key-managers/9e814607-0f92-4205-ae03-e20d6b7a4a98"
 ```
 
 data2 file can be found in data/data2.json 
