@@ -17,13 +17,15 @@ given below:
 ## Configure Identity Server as Key manager 
 
 First you need to obtain the consumer key/secret key pair by calling the dynamic client registration (DCR) endpoint. You can add your preferred grant types in the payload. A sample payload is shown below.
-  `{
+  ```
+  {
   "callbackUrl":"www.google.lk",
   "clientName":"rest_api_admin",
   "owner":"admin",
   "grantType":"client_credentials password refresh_token",
   "saasApp":true
-  }`
+  }
+```
 Create a file (payload.json) with the above sample payload, and use the cURL shown bellow to invoke the DCR endpoint. Authorization header of this should contain the base64 encoded admin username and password. Format of the request
 
   `curl -X POST -H "Authorization: Basic Base64(admin_username:admin_password)" -H "Content-Type: application/json"
@@ -33,7 +35,8 @@ Sample payload.json can be found in data/payload.json
 Sample request `curl -X POST -H "Authorization: Basic YWRtaW46YWRtaW4=" -H "Content-Type: application/json" -d @payload.json https://am.wso2.com/client-registration/v0.17/register -k`
 
 Following is a sample response after invoking the above curl.
-`{
+`
+{
 "clientId": "fOCi4vNJ59PpHucC2CAYfYuADdMa",
 "clientName": "rest_api_admin",
 "callBackURL": "www.google.lk",
@@ -43,7 +46,8 @@ Following is a sample response after invoking the above curl.
 "jsonString": "{\"grant_types\":\"client_credentials password refresh_token\",\"redirect_uris\":\"www.google.lk\",\"client_name\":\"rest_api_admin\"}",
 "jsonAppAttribute": "{}",
 "tokenType": null
-}`
+}
+`
 
 Next you must use the above client id and secret to obtain the access token. We will be using the password grant type for this, you can use any grant type you desire. You also need to add the proper scope when getting the access token. All possible scopes for Admin REST API can be viewed in OAuth2 Security section of this document and scope for each resource is given in authorizations section of resource documentation. Following is the format of the request if you are using the password grant type.
 
