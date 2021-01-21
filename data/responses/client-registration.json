@@ -1,0 +1,281 @@
+$ curl -sk -X POST -u 'admin:admin' -H "Content-Type: application/json" \
+  -d @../data/payload.json \
+  https://am.agaveplatform.org/client-registration/v0.17/register | jq .
+{
+  "clientId": "gj0SEacdEiwQsTxg4JH_QE7MKQga",
+  "clientName": "wso2is",
+  "callBackURL": "https://identity.agaveplatform.org/",
+  "clientSecret": "w179aen0kjrz3dNg0feufxNujdka",
+  "isSaasApplication": true,
+  "appOwner": "admin",
+  "jsonString": "{\"grant_types\":\"client_credentials password refresh_token\",\"redirect_uris\":\"https:\\/\\/identity.agaveplatform.org\\/\",\"client_name\":\"wso2is\"}",
+  "jsonAppAttribute": "{}",
+  "tokenType": null
+}
+
+
+
+$ curl -sk -d "grant_type=password&username=admin&password=admin&scope=apim:admin apim:tier_view" \
+   -u "gj0SEacdEiwQsTxg4JH_QE7MKQga:w179aen0kjrz3dNg0feufxNujdka" \
+   https://gateway.am.agaveplatform.org/token | jq .
+{
+  "access_token":"c3c9023b-ab71-3dfc-8698-87822c013589",
+  "refresh_token":"deeff38f-eb7f-3a5f-9515-733c48c35d9b",
+  "scope":"apim:admin apim:tier_view",
+  "token_type":"Bearer",
+  "expires_in":3600
+}
+
+$ curl -sk -X POST -H "Authorization: Bearer c3c9023b-ab71-3dfc-8698-87822c013589" \
+  -H "Content-Type: application/json" \
+  -d @../data/data1.json \
+  "https://am.agaveplatform.org/api/am/admin/v1/key-managers" | jq .
+{
+  "id": "7c3c59fd-6351-46df-b17f-8b1a72225c53",
+  "name": "WSO2-Identity-Server-KM",
+  "displayName": "WSO2-Identity-Server",
+  "type": "WSO2-IS",
+  "description": "This is a key manager for Developers",
+  "wellKnownEndpoint": null,
+  "introspectionEndpoint": "https://wso2is-pattern-1-identity-service:9443/oauth2/introspect",
+  "clientRegistrationEndpoint": "https://wso2is-pattern-1-identity-service:9443/keymanager-operations/dcr/register",
+  "tokenEndpoint": "https://wso2is-pattern-1-identity-service:9443/oauth2/token",
+  "revokeEndpoint": "https://wso2is-pattern-1-identity-service:9443/oauth2/revoke",
+  "userInfoEndpoint": "https://wso2is-pattern-1-identity-service:9443/oauth2/userinfo?schema=openid",
+  "authorizeEndpoint": "https://wso2is-pattern-1-identity-service:9443/oauth2/authorize",
+  "certificates": {
+    "type": "PEM",
+    "value": ""
+  },
+  "issuer": "https://wso2is-pattern-1-identity-service:9443/services",
+  "scopeManagementEndpoint": "https://wso2is-pattern-1-identity-service:9443/api/identity/oauth2/v1.0/scopes",
+  "availableGrantTypes": [
+    "client_credentials",
+    "refresh_token",
+    "authorization_code",
+    "password"
+  ],
+  "enableTokenGeneration": true,
+  "enableTokenEncryption": false,
+  "enableTokenHashing": false,
+  "enableMapOAuthConsumerApps": false,
+  "enableOAuthAppCreation": true,
+  "enableSelfValidationJWT": true,
+  "claimMapping": [
+    {
+      "remoteClaim": "http://idp.org/username",
+      "localClaim": "http://wso2.org/username"
+    }
+  ],
+  "consumerKeyClaim": null,
+  "scopesClaim": null,
+  "tokenValidation": [
+    {
+      "id": 0,
+      "enable": false,
+      "type": "REFERENCE",
+      "value": "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}"
+    }
+  ],
+  "enabled": true,
+  "additionalProperties": {
+    "self_validate_jwt": true,
+    "Username": "admin",
+    "Password": "admin"
+  }
+}
+
+$ curl -sk -H "Authorization: Bearer c3c9023b-ab71-3dfc-8698-87822c013589" \
+  -H "Content-Type: application/json" \
+  "https://am.agaveplatform.org/api/am/admin/v1/key-managers" | jq .
+{
+  "count": 2,
+  "list": [
+    {
+      "id": "7c3c59fd-6351-46df-b17f-8b1a72225c53",
+      "name": "WSO2-Identity-Server-KM",
+      "type": "WSO2-IS",
+      "description": "This is a key manager for Developers",
+      "enabled": true
+    },
+    {
+      "id": "fcca6e8b-4113-4207-ba8c-a511db9a3d94",
+      "name": "Resident Key Manager",
+      "type": "default",
+      "description": "This is Resident Key Manager",
+      "enabled": true
+    }
+  ]
+}
+
+$ curl -sk -H "Authorization: Bearer c3c9023b-ab71-3dfc-8698-87822c013589"   \
+  -H "Content-Type: application/json" \
+  "https://am.agaveplatform.org/api/am/admin/v1/key-managers/fcca6e8b-4113-4207-ba8c-a511db9a3d94" \
+  | jq '. | .enabled=false' \
+  | curl -sk -X PUT -H "Authorization: Bearer c3c9023b-ab71-3dfc-8698-87822c013589" \
+    -H "Content-Type: application/json" \
+    -d @- \
+    "https://am.agaveplatform.org/api/am/admin/v1/key-managers/fcca6e8b-4113-4207-ba8c-a511db9a3d94" \
+    | jq .
+{
+  "id": "fcca6e8b-4113-4207-ba8c-a511db9a3d94",
+  "name": "Resident Key Manager",
+  "displayName": null,
+  "type": "default",
+  "description": "This is Resident Key Manager",
+  "wellKnownEndpoint": null,
+  "introspectionEndpoint": null,
+  "clientRegistrationEndpoint": null,
+  "tokenEndpoint": "https://localhost:9443/oauth2/token",
+  "revokeEndpoint": "https://localhost:9443/oauth2/revoke",
+  "userInfoEndpoint": null,
+  "authorizeEndpoint": null,
+  "certificates": {
+    "type": "JWKS",
+    "value": "https://localhost:9443/oauth2/jwks"
+  },
+  "issuer": "https://am.agaveplatform.org:443/oauth2/token",
+  "scopeManagementEndpoint": null,
+  "availableGrantTypes": [
+    "refresh_token",
+    "urn:ietf:params:oauth:grant-type:saml2-bearer",
+    "password",
+    "client_credentials",
+    "iwa:ntlm",
+    "urn:ietf:params:oauth:grant-type:device_code",
+    "authorization_code",
+    "urn:ietf:params:oauth:grant-type:jwt-bearer"
+  ],
+  "enableTokenGeneration": true,
+  "enableTokenEncryption": false,
+  "enableTokenHashing": false,
+  "enableMapOAuthConsumerApps": false,
+  "enableOAuthAppCreation": true,
+  "enableSelfValidationJWT": true,
+  "claimMapping": [
+    {
+      "remoteClaim": "gender",
+      "localClaim": "http://wso2.org/claims/gender"
+    },
+    {
+      "remoteClaim": "email_verified",
+      "localClaim": "http://wso2.org/claims/identity/emailVerified"
+    },
+    {
+      "remoteClaim": "zoneinfo",
+      "localClaim": "http://wso2.org/claims/timeZone"
+    },
+    {
+      "remoteClaim": "picture",
+      "localClaim": "http://wso2.org/claims/photourl"
+    },
+    {
+      "remoteClaim": "preferred_username",
+      "localClaim": "http://wso2.org/claims/displayName"
+    },
+    {
+      "remoteClaim": "middle_name",
+      "localClaim": "http://wso2.org/claims/middleName"
+    },
+    {
+      "remoteClaim": "nickname",
+      "localClaim": "http://wso2.org/claims/nickname"
+    },
+    {
+      "remoteClaim": "profile",
+      "localClaim": "http://wso2.org/claims/url"
+    },
+    {
+      "remoteClaim": "phone_number_verified",
+      "localClaim": "http://wso2.org/claims/identity/phoneVerified"
+    },
+    {
+      "remoteClaim": "postal_code",
+      "localClaim": "http://wso2.org/claims/postalcode"
+    },
+    {
+      "remoteClaim": "groups",
+      "localClaim": "http://wso2.org/claims/role"
+    },
+    {
+      "remoteClaim": "address",
+      "localClaim": "http://wso2.org/claims/addresses"
+    },
+    {
+      "remoteClaim": "country",
+      "localClaim": "http://wso2.org/claims/country"
+    },
+    {
+      "remoteClaim": "formatted",
+      "localClaim": "http://wso2.org/claims/addresses.formatted"
+    },
+    {
+      "remoteClaim": "email",
+      "localClaim": "http://wso2.org/claims/emailaddress"
+    },
+    {
+      "remoteClaim": "upn",
+      "localClaim": "http://wso2.org/claims/userprincipal"
+    },
+    {
+      "remoteClaim": "given_name",
+      "localClaim": "http://wso2.org/claims/givenname"
+    },
+    {
+      "remoteClaim": "locality",
+      "localClaim": "http://wso2.org/claims/locality"
+    },
+    {
+      "remoteClaim": "region",
+      "localClaim": "http://wso2.org/claims/region"
+    },
+    {
+      "remoteClaim": "family_name",
+      "localClaim": "http://wso2.org/claims/lastname"
+    },
+    {
+      "remoteClaim": "name",
+      "localClaim": "http://wso2.org/claims/fullname"
+    },
+    {
+      "remoteClaim": "locale",
+      "localClaim": "http://wso2.org/claims/local"
+    },
+    {
+      "remoteClaim": "website",
+      "localClaim": "http://wso2.org/claims/url"
+    },
+    {
+      "remoteClaim": "phone_number",
+      "localClaim": "http://wso2.org/claims/telephone"
+    },
+    {
+      "remoteClaim": "birthdate",
+      "localClaim": "http://wso2.org/claims/dob"
+    },
+    {
+      "remoteClaim": "updated_at",
+      "localClaim": "http://wso2.org/claims/modified"
+    }
+  ],
+  "consumerKeyClaim": null,
+  "scopesClaim": null,
+  "tokenValidation": [
+    {
+      "id": null,
+      "enable": true,
+      "type": "REFERENCE",
+      "value": "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}"
+    }
+  ],
+  "enabled": false,
+  "additionalProperties": {
+    "ServerURL": "https://localhost:9443/services/",
+    "validation_enable": true,
+    "OAuthConfigurations.EncryptPersistedTokens": false,
+    "VALIDITY_PERIOD": "3600",
+    "self_validate_jwt": true,
+    "RevokeURL": "https://localhost:9443/oauth2/revoke",
+    "TokenURL": "https://localhost:9443/oauth2/token"
+  }
+}
