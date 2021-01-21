@@ -170,3 +170,17 @@ image: {{ $dockerRegistry }}/{{ $imageName }}{{- if not (eq $imageTag "") }}:{{ 
 {{- end -}}
 {{- end -}}
 {{- end -}}
+
+
+{{/*
+Create a default fully qualified app name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+If release name contains chart name it will be used as a full name.
+*/}}
+{{- define "openldap.ldapUrl" -}}
+{{/*{{- if .Values.openldap.enableTLS }}*/}}
+{{/*{{- printf "ldaps://%s-openldap:%d" .Release.Name (default .Values.openldap.port 636) }}*/}}
+{{/*{{- else }}*/}}
+{{- printf "ldap://%s-openldap:%d" .Release.Name (default .Values.openldap.port 389) }}
+{{/*{{- end }}*/}}
+{{- end }}

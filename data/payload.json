@@ -1,7 +1,7 @@
-  {
-  "callbackUrl":"www.google.lk",
-  "clientName":"rest_api_devportal1",
-  "owner":"admin",
-  "grantType":"client_credentials password refresh_token",
-  "saasApp":true
-  }
+{
+  "callbackUrl": "https://identity.agaveplatform.org/",
+  "clientName": "wso2is",
+  "owner": "admin",
+  "grantType": "client_credentials password refresh_token",
+  "saasApp": true
+}

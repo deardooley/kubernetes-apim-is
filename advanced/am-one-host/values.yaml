@@ -29,6 +29,8 @@ wso2:
       mysql: true
       # Enable NFS dynamic provisioner for Kubernetes
       nfsServerProvisioner: true
+      # The configuration should be set to be 'true' if a OpenLDAP database should be spawned as a pod within the cluster
+      ldap: true
 
     # Persisted and shared runtime artifacts for API Manager
     # See official documentation (from https://apim.docs.wso2.com/en/latest/install-and-setup/setup/reference/common-runtime-and-configuration-artifacts/#persistent-runtime-artifacts)
@@ -103,9 +105,19 @@ wso2:
 
       # If the deployment configurations for the WSO2 API Manager v3.2.0 (<WSO2AM>/repository/conf/deployment.toml),
       # add the customized configuration file under (wso2 -> deployment -> am -> config -> deployment.toml)
-#      config: ""
+#      config:
 #        deployment.toml: |-
 #          # deployment configurations for the WSO2 API Manager v3.2.0 (<WSO2AM>/repository/conf/deployment.toml)
+
+      # If the deployment configurations for the WSO2 API Manager v3.2.0 (<WSO2AM>/repository/conf/deployment.toml),
+      # add the customized user store
+#      extraUserStores:
+#        am_agaveplatform_org: |-
+#          <?xml version="1.0" encoding="UTF-8"?>
+#          <UserStoreManager class="org.wso2.carbon.user.core.ldap.ReadOnlyLDAPUserStoreManager">
+#             <Property name="ConnectionURL">ldaps://ldap.example.com:636</Property>
+#              ...
+
 
       # username and password for the super admin user configured at first run. These will be ignored if
       # a custom configuration is provided
@@ -133,80 +145,6 @@ wso2:
             kubernetes.io/ingress.class: "nginx"
             nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
 
-
-    wso2is:
-      # Container image configurations
-      dockerRegistry: agaveplatform
-      imageName: "wso2is"
-      imageTag: "5.10.0"
-      # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
-      imagePullPolicy: IfNotPresent
-
-      # Number of deployment replicas
-      replicas: 1
-
-      # Indicates whether the container is running
-      livenessProbe:
-        # Number of seconds after the container has started before liveness probes are initiated
-        initialDelaySeconds: 120
-        # How often (in seconds) to perform the probe
-        periodSeconds: 10
-      # Indicates whether the container is ready to service requests
-      readinessProbe:
-        # Number of seconds after the container has started before readiness probes are initiated
-        initialDelaySeconds: 120
-        # How often (in seconds) to perform the probe
-        periodSeconds: 10
-
-      resources:
-        # These are the minimum resource recommendations for running WSO2 Identity and Access Management product profiles
-        # as per official documentation (https://is.docs.wso2.com/en/latest/setup/installation-prerequisites/)
-        requests:
-          # The minimum amount of memory that should be allocated for a Pod
-          memory: "2Gi"
-          # The minimum amount of CPU that should be allocated for a Pod
-          cpu: "1500m"
-        limits:
-          # The maximum amount of memory that should be allocated for a Pod
-          memory: "3Gi"
-          # The maximum amount of CPU that should be allocated for a Pod
-          cpu: "2000m"
-        # JVM settings
-        # These are the resource allocation configurations associated with the JVM
-        # Refer to the official documentation for advanced details (https://is.docs.wso2.com/en/latest/setup/performance-tuning-recommendations/#jvm-settings)
-        jvm:
-          # Resource allocation for the Java Heap
-          heap:
-            memory:
-              # Initial and minimum Heap size
-              xms: "2048m"
-              # Maximum Heap size
-              xmx: "2048m"
-
-      # If the deployment configurations for the WSO2 Identity Server (<WSO2AM>/repository/conf/deployment.toml),
-      # add the customized configuration file under (wso2 -> deployment -> wso2im -> config -> deployment.toml)
-#      config: ""
-#        deployment.toml: |-
-#          # deployment configurations for the WSO2 Identity Server v5.10.0 (<WSO2AM>/repository/conf/deployment.toml)
-
-      # username and password for the super admin user configured at first run. These will be ignored if
-      # a custom configuration is provided
-      admin:
-        username: *carbon_admin_username
-        password: *carbon_admin_password
-
-      ingress:
-        identity:
-          # Hostname for Identity Server
-          hostname: "identity.agaveplatform.org"
-          # Annotations for the Identity service Ingress
-          annotations:
-            kubernetes.io/ingress.class: "nginx"
-            nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-            nginx.ingress.kubernetes.io/affinity: "cookie"
-            nginx.ingress.kubernetes.io/session-cookie-name: "route"
-            nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
-
 kubernetes:
   # Name of Kubernetes service account
   serviceAccount: "wso2am-pattern-1-svc-account"
@@ -219,6 +157,52 @@ mysql:
   password: wso2carbon
   rootPassword: root
 
+smtp:
+  host: maildev
+  auth: "true"
+  port: "25"
+  username: maildev
+  password: password
+  fromName: Agave Platform Notification Service
+  fromAddress: "no-reply@agaveplatform.org"
+
 agave:
   tenant:
     code: sandbox
+
+##
+## External Database Configuration
+##
+## All of these values are only used when mariadb.enabled is set to false
+##
+externalDatabase:
+  ## Database host
+  ##
+  host: mysql-auth
+  ## non-root Username for Wordpress Database
+  ##
+  user: ""
+  ## Database password
+  ##
+  password: ""
+  ## Database port number
+  ##
+  port: 3306
+  ## Use existing secret (ignores previous password)
+  ## must contain key `mariadb-password`
+  ## NOTE: When it's set, the `externalDatabase.password` parameter is ignored
+  ##
+  # existingSecret:
+
+openldap:
+  #persistence:
+    #enabled: true
+    #storageClass: "-"
+
+  # Default Passwords to use, stored as a secret. If unset, passwords are auto-generated.
+  # You can override these at install time with
+  # helm install openldap --set openldap.adminPassword=<passwd>,openldap.configPassword=<passwd>
+  adminPassword: "p@ssword"
+  configPassword: "p@ssword"
+
+

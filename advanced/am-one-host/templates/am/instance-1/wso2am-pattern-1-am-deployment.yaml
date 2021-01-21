@@ -107,6 +107,10 @@ spec:
           volumeMounts:
             - name: wso2am-conf
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
+            {{ if or .Values.wso2.deployment.userStores .Values.wso2.deployment.dependencies.ldap }}
+            - name: wso2am-userstore
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/userstores/
+            {{ end }}
             {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled }}
             - name: wso2am-local-carbon-database-storage
               mountPath: /home/wso2carbon/solr/database
@@ -132,6 +136,11 @@ spec:
         - name: wso2am-conf
           configMap:
             name: {{ template "am-pattern-1.resource.prefix" . }}-am-1-conf
+        {{ if or .Values.wso2.deployment.userStores .Values.wso2.deployment.dependencies.ldap }}
+        - name: wso2am-userstore
+          secret:
+            secretName: {{ template "am-pattern-1.resource.prefix" . }}-am-1-userstore
+        {{ end }}
         {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled }}
         - name: wso2am-local-carbon-database-storage
           persistentVolumeClaim:

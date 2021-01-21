@@ -35,17 +35,17 @@ data:
     base_path = "https://$ref{server.hostname}:${carbon.management.port}"
 
     [super_admin]
-    username = "admin"
-    password = "admin"
+    username = "{{ .Values.wso2.deployment.wso2is.admin.username }}"
+    password = "{{ .Values.wso2.deployment.wso2is.admin.password }}"
     create_admin_account = true
 
     [user_store]
     type = "database_unique_id"
 
     [database.user]
-    url = "jdbc:mysql://wso2apim-rdbms-service-mysql:3306/WSO2IS_SHARED_DB?autoReconnect=true&amp;useSSL=false"
-    username = "wso2carbon"
-    password = "wso2carbon"
+    url = "jdbc:mysql://{{ template "am-mysql.resource.prefix" . }}-rdbms-service-mysql:3306/WSO2IS_SHARED_DB?autoReconnect=true&amp;useSSL=false"
+    username = "{{ .Values.mysql.username }}"
+    password = "{{ .Values.mysql.password }}"
     driver = "com.mysql.cj.jdbc.Driver"
 
     [database.user.pool_options]
@@ -54,19 +54,22 @@ data:
     [transport.https.properties]
     proxyPort="443"
 
+    [database_configuration]
+    enable_h2_console = true
+
     [database.identity_db]
-    url = "jdbc:mysql://wso2apim-rdbms-service-mysql:3306/WSO2IS_IDENTITY_DB?autoReconnect=true&amp;useSSL=false"
-    username = "wso2carbon"
-    password = "wso2carbon"
+    url = "jdbc:mysql://{{ template "am-mysql.resource.prefix" . }}-rdbms-service-mysql:3306/WSO2IS_IDENTITY_DB?autoReconnect=true&amp;useSSL=false"
+    username = "{{ .Values.mysql.username }}"
+    password = "{{ .Values.mysql.password }}"
     driver = "com.mysql.cj.jdbc.Driver"
 
     [database.identity_db.pool_options]
     validationQuery = "SELECT 1"
 
     [database.shared_db]
-    url = "jdbc:mysql://wso2apim-rdbms-service-mysql:3306/WSO2IS_SHARED_DB?autoReconnect=true&amp;useSSL=false"
-    username = "wso2carbon"
-    password = "wso2carbon"
+    url = "jdbc:mysql://{{ template "am-mysql.resource.prefix" . }}-rdbms-service-mysql:3306/WSO2IS_SHARED_DB?autoReconnect=true&amp;useSSL=false"
+    username = "{{ .Values.mysql.username }}"
+    password = "{{ .Values.mysql.password }}"
     driver = "com.mysql.cj.jdbc.Driver"
 
     [truststore]
@@ -74,6 +77,12 @@ data:
     password="wso2carbon"
     type="JKS"
 
+    [[event_listener]]
+    id = "mutual_tls_authenticator"
+    type = "org.wso2.carbon.identity.core.handler.AbstractIdentityHandler"
+    name = "org.wso2.carbon.identity.oauth2.token.handler.clientauth.mutualtls.MutualTLSClientAuthenticator"
+    order = "158"
+    enable = false
     [[event_listener]]
     id = "token_revocation"
     type = "org.wso2.carbon.identity.core.handler.AbstractIdentityHandler"
@@ -147,9 +156,9 @@ data:
     validationQuery = "SELECT 1"
 
     [database.bps_database]
-    url = "jdbc:mysql://wso2apim-rdbms-service-mysql:3306/WSO2IS_BPS_DB?autoReconnect=true&amp;useSSL=false"
-    username = "wso2carbon"
-    password = "wso2carbon"
+    url = "jdbc:mysql://{{ template "am-mysql.resource.prefix" . }}-rdbms-service-mysql:3306/WSO2IS_BPS_DB?autoReconnect=true&amp;useSSL=false"
+    username = "{{ .Values.mysql.username }}"
+    password = "{{ .Values.mysql.password }}"
     driver = "com.mysql.cj.jdbc.Driver"
 
     [database.bps_database.pool_options]
@@ -157,9 +166,9 @@ data:
 
     [[datasource]]
     id = "WSO2ConsentDS"
-    url = "jdbc:mysql://wso2apim-rdbms-service-mysql:3306/WSO2IS_CONSENT_DB?autoReconnect=true&amp;useSSL=false"
-    username = "wso2carbon"
-    password = "wso2carbon"
+    url = "jdbc:mysql://{{ template "am-mysql.resource.prefix" . }}-rdbms-service-mysql:3306/WSO2IS_CONSENT_DB?autoReconnect=true&amp;useSSL=false"
+    username = "{{ .Values.mysql.username }}"
+    password = "{{ .Values.mysql.password }}"
     driver = "com.mysql.cj.jdbc.Driver"
     pool_options.validationQuery="SELECT 1"
     pool_options.maxActive=50
@@ -172,5 +181,16 @@ data:
     [keystore.primary]
     name = "wso2carbon.jks"
     password = "wso2carbon"
+
+    [output_adapter.email]
+    from_address= "wso2iamtest@gmail.com"
+    username= "wso2iamtest"
+    password= "Wso2@iam70"
+    hostname= "smtp.gmail.com"
+    port= 587
+    enable_start_tls= true
+    enable_authentication= true
+    signature = "ABC.com"
+
 
   {{- end }}

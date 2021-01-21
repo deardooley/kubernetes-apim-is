@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wso2apim-mysql-deployment
-  namespace: wso2
+  name: {{ template "am-mysql.resource.prefix" . }}-mysql-deployment
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      deployment: wso2apim-mysql
+      deployment: {{ template "am-mysql.resource.prefix" . }}-mysql
       product: api-manager
   template:
     metadata:
       labels:
-        deployment: wso2apim-mysql
+        deployment: {{ template "am-mysql.resource.prefix" . }}-mysql
         product: api-manager
     spec:
       containers:
-        - name: wso2apim-mysql
+        - name: {{ template "am-mysql.resource.prefix" . }}-mysql
           image: mysql:5.7
           livenessProbe:
             exec:
@@ -39,20 +39,20 @@ spec:
             runAsUser: 999
           env:
             - name: MYSQL_ROOT_PASSWORD
-              value: root
+              value: {{ .Values.mysql.rootPassword }}
             - name: MYSQL_USER
-              value: wso2carbon
+              value: {{ .Values.mysql.username }}
             - name: MYSQL_PASSWORD
-              value: wso2carbon
+              value: {{ .Values.mysql.password }}
           ports:
             - containerPort: 3306
               protocol: TCP
           volumeMounts:
-            - name: wso2apim-mysql-dbscripts
+            - name: {{ template "am-mysql.resource.prefix" . }}-mysql-dbscripts
               mountPath: /docker-entrypoint-initdb.d
           args: ["--max-connections", "10000"]
       volumes:
-        - name: wso2apim-mysql-dbscripts
+        - name: {{ template "am-mysql.resource.prefix" . }}-mysql-dbscripts
           configMap:
-            name: wso2apim-mysql-dbscripts
-      serviceAccountName: "wso2am-pattern-1-svc-account"
+            name: {{ template "am-mysql.resource.prefix" . }}-mysql-dbscripts
+      serviceAccountName: {{ .Values.kubernetes.serviceAccount }}

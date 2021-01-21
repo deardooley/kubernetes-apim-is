@@ -44,8 +44,8 @@ data:
     [user_store]
     type = "database_unique_id"
 
-    [database_configuration]
-    enable_h2_console = true
+    #[database_configuration]
+    #enable_h2_console = true
 
     [database.apim_db]
     type = "mysql"
@@ -168,10 +168,10 @@ data:
     [oauth]
     token_validation.app_access_token_validity = 14400
 
-    [apim.oauth_config]
-    enable_outbound_auth_header = true
-    auth_header = "Authorization"
-    revoke_endpoint = "https://localhost:${https.nio.port}/revoke"
+    #[apim.oauth_config]
+    #enable_outbound_auth_header = true
+    #auth_header = "Authorization"
+    #revoke_endpoint = "https://localhost:${https.nio.port}/revoke"
     #enable_token_encryption = false
     #enable_token_hashing = false
 
@@ -183,10 +183,10 @@ data:
     #application_sharing_impl = "org.wso2.carbon.apimgt.impl.SAMLGroupIDExtractorImpl"
     #display_multiple_versions = false
     #display_deprecated_apis = false
-    enable_comments = false
-    enable_ratings = false
-    enable_forum = false
-    enable_anonymous_mode=false
+    #enable_comments = false
+    #enable_ratings = false
+    #enable_forum = false
+    #enable_anonymous_mode=false
 
     [apim.cors]
     allow_origins = "*"
@@ -248,12 +248,12 @@ data:
     #ciphers = ["SSL_RSA_WITH_RC4_128_MD5","SSL_RSA_WITH_RC4_128_SHA"]
 
     #[apim.notification]
-    #from_address = "APIM.com"
-    #username = "APIM"
-    #password = "APIM+123"
-    #hostname = "localhost"
-    #port = 3025
-    #enable_start_tls = false
+    #from_address = "{{ .Values.smtp.fromAddress }}"
+    #username = "{{ .Values.smtp.username }}"
+    #password = "{{ .Values.smtp.password }}"
+    #hostname = "{{ .Values.smtp.host }}"
+    #port = {{ .Values.smtp.port }}
+    #enable_start_tls = true
     #enable_authentication = true
 
     #[apim.token.revocation]

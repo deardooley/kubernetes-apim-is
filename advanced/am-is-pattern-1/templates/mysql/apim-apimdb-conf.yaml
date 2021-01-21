@@ -1,8 +1,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: wso2apim-mysql-dbscripts
-  namespace: wso2
+  name: {{ template "am-mysql.resource.prefix" . }}-mysql-dbscripts
+  namespace : {{ .Release.Namespace }}
+
 data:
   init.sql: |-
     DROP DATABASE IF EXISTS WSO2IS_SHARED_DB;
@@ -13,10 +14,10 @@ data:
     CREATE DATABASE WSO2IS_IDENTITY_DB;
     CREATE DATABASE WSO2IS_BPS_DB;
     CREATE DATABASE WSO2IS_CONSENT_DB;
-    GRANT ALL ON WSO2IS_SHARED_DB.* TO 'wso2carbon'@'%' IDENTIFIED BY 'wso2carbon';
-    GRANT ALL ON WSO2IS_IDENTITY_DB.* TO 'wso2carbon'@'%' IDENTIFIED BY 'wso2carbon';
-    GRANT ALL ON WSO2IS_BPS_DB.* TO 'wso2carbon'@'%' IDENTIFIED BY 'wso2carbon';
-    GRANT ALL ON WSO2IS_CONSENT_DB.* TO 'wso2carbon'@'%' IDENTIFIED BY 'wso2carbon';
+    GRANT ALL ON WSO2IS_SHARED_DB.* TO '{{ .Values.mysql.username }}'@'%' IDENTIFIED BY '{{ .Values.mysql.password }}';
+    GRANT ALL ON WSO2IS_IDENTITY_DB.* TO '{{ .Values.mysql.username }}'@'%' IDENTIFIED BY '{{ .Values.mysql.password }}';
+    GRANT ALL ON WSO2IS_BPS_DB.* TO '{{ .Values.mysql.username }}'@'%' IDENTIFIED BY '{{ .Values.mysql.password }}';
+    GRANT ALL ON WSO2IS_CONSENT_DB.* TO '{{ .Values.mysql.username }}'@'%' IDENTIFIED BY '{{ .Values.mysql.password }}';
 
     USE WSO2IS_SHARED_DB;
     CREATE TABLE IF NOT EXISTS REG_CLUSTER_LOCK (
@@ -2023,7 +2024,7 @@ data:
   mysql_apim.sql: |-
     DROP DATABASE IF EXISTS WSO2AM_DB;
     CREATE DATABASE WSO2AM_DB;
-    GRANT ALL ON WSO2AM_DB.* TO 'wso2carbon'@'%' IDENTIFIED BY 'wso2carbon';
+    GRANT ALL ON WSO2AM_DB.* TO '{{ .Values.mysql.password }}'@'%' IDENTIFIED BY '{{ .Values.mysql.password }}';
 
     USE WSO2AM_DB;
     -- Start of IDENTITY Tables--
@@ -3973,7 +3974,7 @@ data:
   mysql_shared.sql: |-
     DROP DATABASE IF EXISTS WSO2AM_SHARED_DB;
     CREATE DATABASE WSO2AM_SHARED_DB;
-    GRANT ALL ON WSO2AM_SHARED_DB.* TO 'wso2carbon'@'%' IDENTIFIED BY 'wso2carbon';
+    GRANT ALL ON WSO2AM_SHARED_DB.* TO '{{ .Values.mysql.password }}'@'%' IDENTIFIED BY '{{ .Values.mysql.password }}';
 
     USE WSO2AM_SHARED_DB;
     CREATE TABLE IF NOT EXISTS REG_CLUSTER_LOCK (
